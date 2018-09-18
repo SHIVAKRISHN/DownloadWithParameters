@@ -8,11 +8,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
+import org.json.JSONObject;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,9 +40,12 @@ public class DownloadController {
 	private static final String TITLE = "TestReport";
     public static final String PDF_EXTENSION = ".pdf";
 	
-	@GetMapping("/methodOne")
-	public ResponseEntity < InputStreamResource > exportPDF() throws FileNotFoundException,DocumentException
-	{Document document = new Document(PageSize.A4, 36, 36, 90, 36);
+	@PostMapping("/methodOne")
+	public ResponseEntity < InputStreamResource > exportPDF(@RequestBody String dataObj) throws FileNotFoundException,DocumentException
+	{
+		JSONObject object = new JSONObject(dataObj);
+		System.out.println("result is "+ object.getString("name"));
+		Document document = new Document(PageSize.A4, 36, 36, 90, 36);
 	String filePath = "ApplicantDetails.pdf";
 
 	PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
@@ -81,7 +84,7 @@ public class DownloadController {
 		    line1.setOffset(-2);
 		    document.add(line1);
 		    
-		   // document.add(new Paragraph(hostelStudentObj.getCreatedTime().split(" ")[0]+"					"+" "+"										"+"HostelFees__"+hostelStudentObj.getHostelFeesStructure()+"																"+hostelStudentObj.getTotalAmount()+"										"+" "));
+		    document.add(new Paragraph(object.getString("name")+"					"+object.getString("mobileNumber")+"										"+object.getString("age")+"																"+object.getString("gender")+"										"+" "));
 		    String dispString="";
 		    float paidfee=0;
 		    	
