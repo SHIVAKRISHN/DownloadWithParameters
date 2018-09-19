@@ -21,27 +21,60 @@ export class AppServerService {
     private sanitizer: DomSanitizer
   ) { }
 
-  downloadTheRecepit(paymentObj)
+  ExportPdfInAngular2(dataObj)
 {
 
 
 
-  let headerOptions = new Headers({'Content-Type': 'application/json', 
+  let headerOptions = new Headers({
+  
+  'Content-Type': 'application/json', 
   'Accept': 'application/pdf',
-  'x-auth-token':  localStorage.getItem('token'),
-  'tenentId': localStorage.getItem('tenentId')});     	    	
-    let requestOptions = new RequestOptions({method : RequestMethod.Get, headers : headerOptions}); 
+ 
+});     	    	
     
-    let options_test = new RequestOptions({ headers: headerOptions });
+    
+    let options = new RequestOptions({ headers: headerOptions });
 // Ensure you set the responseType to Blob.
-options_test.responseType = ResponseContentType.Blob;
+    options.responseType = ResponseContentType.Blob;
 
     
-      this.oldHttp.post("http://localhost:8080/myWebApp/download/methodOne",paymentObj,options_test).pipe(map(data => {
-        console.log(data);
+      this.oldHttp.post("http://localhost:8080/myWebApp/download/methodOne",dataObj,options).pipe(map(data => {
+       // console.log(data);
 
-        console.log(data);
+        //console.log(data);
         let fileBlob = data.blob();
+        let blob = new Blob([fileBlob], { 
+           type: 'application/pdf' // must match the Accept type
+        });
+        
+        let url = window.URL.createObjectURL(blob);
+        this.sanitizer.bypassSecurityTrustUrl(url);
+        const anchor = document.createElement('a');
+anchor.href = url;
+
+anchor.target = "_blank";
+anchor.click();
+      })).subscribe((result : any) => {
+      });
+
+}
+
+ExportPdfInAngular6(dataObj)
+{
+
+  let headerOptions = new HttpHeaders({
+  'Content-Type': 'application/json', 
+  'Accept': 'application/pdf',
+ });
+
+    let requestOptions = { headers : headerOptions,responseType : 'blob' as 'blob'}; 
+    
+  
+    
+      this.http.post("http://localhost:8080/myWebApp/download/methodOne",dataObj,requestOptions).pipe(map((data : any) => {
+      
+        let fileBlob = data;
         let blob = new Blob([fileBlob], { 
            type: 'application/pdf' // must match the Accept type
         });

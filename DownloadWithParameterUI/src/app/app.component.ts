@@ -14,15 +14,20 @@ export class AppComponent implements OnInit  {
     
   }
 
-  constructor(private dataObj : AppServerService){
+  constructor(private backendService : AppServerService){
 
   }
 
-  submit(form : NgForm)
+  angular2Submit(form : NgForm)
   {
     console.log(form.value);
     
-    this.dataObj.downloadTheRecepit(form.value);
+    this.backendService.ExportPdfInAngular2(form.value);
+  }
+
+  angular6Submit(form : NgForm)
+  {
+    this.backendService.ExportPdfInAngular6(form.value);
   }
 
 
